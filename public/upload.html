@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload to MinIO</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+
+<h2>Upload a File to MinIO</h2>
+
+<input type="file" id="fileInput">
+<button onclick="uploadFile()">Upload</button>
+
+<p id="message"></p>
+
+<script>
+    function uploadFile() {
+        const fileInput = document.getElementById("fileInput");
+        const messageElement = document.getElementById("message");
+
+        if (!fileInput.files.length) {
+            alert("Please select a file first!");
+            return;
+        }
+
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append("file", file);
+
+        axios.post("http://localhost:8082/files/upload", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        })
+            .then(response => {
+                messageElement.textContent = "Upload successful: " + response.data;
+            })
+            .catch(error => {
+                console.error("Upload error:", error);
+                messageElement.textContent = "File upload failed!";
+            });
+    }
+</script>
+
+</body>
+</html>
